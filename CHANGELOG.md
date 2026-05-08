@@ -31,3 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Three example scripts (hello-world, git-clean, backup-home)
 - Complete documentation (README.md)
 - MIT License
+- Added non‑interactive `--yes` flag to `install.sh` for fully automated installs.
+- Installer now automatically adds `~/bin` to `$PATH` when run non‑interactively.
+- New npm script `scriptvault` with a `postinstall` hook that runs the installer automatically.
+- Updated README to reflect npm installation instructions.

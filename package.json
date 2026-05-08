@@ -1,0 +1,17 @@
+{
+  "name": "scriptvault",
+  "version": "0.1.0",
+  "description": "Zero‑dependency Bash CLI for managing personal scripts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/el-musleh/scriptvault"
+  },
+  "license": "MIT",
+  "keywords": ["bash", "script", "cli", "launcher"],
+  "bin": {
+    "scriptvault": "bin/scriptvault"
+  },
+  "scripts": {
+    "postinstall": "bash install.sh --yes"
+  }
+}

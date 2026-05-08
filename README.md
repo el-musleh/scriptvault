@@ -44,6 +44,17 @@ bash install.sh
 
 After installation, reload your shell or `source ~/.bashrc` to add the new `scriptvault` command.
 
+## Global Install via npm
+
+You can also install the tool globally using npm:
+
+```bash
+npm i -g scriptvault
+```
+
+The post‑install hook runs `bash install.sh --yes`, so the tool is installed non‑interactively and automatically updates your `PATH`.
+
+---
 ## Usage
 
 ```bash

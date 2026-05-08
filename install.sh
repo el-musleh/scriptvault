@@ -1,5 +1,13 @@
 #!/bin/bash
-# scriptvault installer
+# Note: this file has been updated to support a non‑interactive "--yes" flag and auto‑PATH configuration.
+
+# Non‑interactive flag support
+if [[ "$1" == "--yes" ]]; then
+  NONINTERACTIVE=1
+  shift
+else
+  NONINTERACTIVE=0
+fi
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
@@ -15,7 +23,7 @@ echo ""
 # 1. Determine install location
 echo "Install binary to: $INSTALL_BIN/scriptvault"
 echo "Install lib to:    $INSTALL_LIB/"
-read -rp "Proceed? [Y/n] " confirm
+[[ $NONINTERACTIVE -eq 0 ]] && read -rp "Proceed? [Y/n] " confirm || confirm="Y"
 [[ "$confirm" =~ ^[Nn]$ ]] && { echo "Aborted."; exit 0; }
 
 # 2. Create directories
@@ -36,7 +44,7 @@ echo "Installed: $INSTALL_BIN/scriptvault"
 if ! echo "$PATH" | tr ':' '\n' | grep -qx "$INSTALL_BIN"; then
   echo ""
   echo "WARNING: $INSTALL_BIN is not in your PATH."
-  read -rp "Add it to ~/.bashrc? [Y/n] " add_path
+  [[ $NONINTERACTIVE -eq 0 ]] && read -rp "Add it to ~/.bashrc? [Y/n] " add_path || add_path="Y"
   if [[ ! "$add_path" =~ ^[Nn]$ ]]; then
     echo "" >> "$HOME/.bashrc"
     echo "# Added by scriptvault installer" >> "$HOME/.bashrc"
@@ -66,7 +74,11 @@ if [[ -n "$DETECTED_SCRIPTS" ]]; then
   echo "  1) Use $DETECTED_SCRIPTS as vault (sets VAULT_DIR in config)"
   echo "  2) Copy scripts into default vault: $DEFAULT_VAULT"
   echo "  3) Use default vault (no migration)"
-  read -rp "Choice [1/2/3]: " migration_choice
+  if [[ $NONINTERACTIVE -eq 0 ]]; then
+    read -rp "Choice [1/2/3]: " migration_choice
+  else
+    migration_choice="3"
+  fi
   case "$migration_choice" in
     1)
       mkdir -p "$CONFIG_DIR"
@@ -96,10 +108,14 @@ fi
 VAULT_DIR_FINAL=$(grep 'VAULT_DIR' "$CONFIG_DIR/config" | cut -d= -f2)
 VAULT_DIR_FINAL="${VAULT_DIR_FINAL/#\~/$HOME}"
 if [[ -z "$(ls -A "$VAULT_DIR_FINAL" 2>/dev/null)" ]]; then
-  read -rp "Install example scripts into vault? [Y/n] " install_examples
+  if [[ $NONINTERACTIVE -eq 0 ]]; then
+    read -rp "Install example scripts into vault? [Y/n] " install_examples
+  else
+    install_examples="Y"
+  fi
   if [[ ! "$install_examples" =~ ^[Nn]$ ]]; then
-    cp -r "$SCRIPT_DIR/examples/"* "$VAULT_DIR_FINAL/"
-    chmod +x "$VAULT_DIR_FINAL/"*.sh 2>/dev/null || true
+    cp -r "$SCRIPT_DIR/examples/*" "$VAULT_DIR_FINAL/"
+    chmod +x "$VAULT_DIR_FINAL/*.sh" 2>/dev/null || true
     echo "Example scripts installed."
   fi
 fi
