@@ -1,0 +1,24 @@
+name: ShellCheck
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+
+jobs:
+  shellcheck:
+    name: Lint Bash scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Run ShellCheck
+        run: |
+          find . -name '*.sh' -not -path '*/.git/*' -print0 |
+          xargs -0 -n1 shellcheck --format=checkstyle |
+          tee checkstyle.xml
+      - name: Upload checkstyle results
+        uses: actions/upload-artifact@v4
+        with:
+          name: shellcheck-report
+          path: checkstyle.xml

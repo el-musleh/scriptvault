@@ -1,0 +1,22 @@
+# Ignore editor swap files and backups
+*.swp
+*.swo
+*~
+*.~*
+
+# Installer temporary files
+install.lock
+install.sh.~*
+install.sh~
+
+# Python bytecode (in case examples use Python)
+__pycache__
+*.py[cod]
+
+# System files
+.DS_Store
+
+# Distribution archives
+*.gz
+*.zip
+*.tar.gz

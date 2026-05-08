@@ -1,0 +1,59 @@
+#!/bin/bash
+# scriptvault — script launcher and manager
+# Version: 0.1.0
+
+set -euo pipefail
+
+VERSION="0.1.0"
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../lib"
+
+# Source library modules
+# shellcheck source=../lib/config.sh
+source "$LIB_DIR/config.sh"
+# shellcheck source=../lib/runtime.sh
+source "$LIB_DIR/runtime.sh"
+# shellcheck source=../lib/menu.sh
+source "$LIB_DIR/menu.sh"
+# shellcheck source=../lib/subcommands.sh
+source "$LIB_DIR/subcommands.sh"
+
+usage() {
+  cat <<'EOF'
+scriptvault — script launcher and manager
+
+Usage:
+  scriptvault              Interactive menu launcher
+  scriptvault list         List all scripts grouped by category
+  scriptvault add <file> [category]
+                           Copy a script into the vault
+  scriptvault new <name> [category]
+                           Create a new script from template, open in $EDITOR
+  scriptvault edit <name>  Open an existing script in $EDITOR
+  scriptvault remove <name>
+                           Delete a script (with confirmation)
+  scriptvault --help       Show this help
+  scriptvault --version    Print version
+
+Vault location: $VAULT_DIR (default: ~/.local/share/scriptvault/scripts)
+Config file:    ~/.config/scriptvault/config
+EOF
+}
+
+main() {
+  load_config
+
+  case "${1:-}" in
+    --help|-h)       usage; exit 0 ;;
+    --version|-v)    echo "scriptvault $VERSION"; exit 0 ;;
+    list)            cmd_list ;;
+    add)             shift; cmd_add "$@" ;;
+    new)             shift; cmd_new "$@" ;;
+    edit)            shift; cmd_edit "$@" ;;
+    remove|rm)       shift; cmd_remove "$@" ;;
+    "")              cmd_menu ;;
+    *)               echo "Unknown command: $1" >&2; usage >&2; exit 1 ;;
+  esac
+}
+
+main "$@"

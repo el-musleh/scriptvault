@@ -1,0 +1,7 @@
+{
+  "version": "1.0",
+  "description": "Local Claude Code settings for scriptvault project",
+  "settings": {
+    "model": "claude-opus-4-7"
+  }
+}
