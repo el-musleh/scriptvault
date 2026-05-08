@@ -24,15 +24,25 @@ commands to add, edit, and remove scripts.
 - **Example scripts** – `hello-world`, `git-clean`, `backup-home`
 - **CI linting** – GitHub Actions run `shellcheck` on every push
 
-## Installation
+
+
+## Updating from npm
+
+If you installed `scriptvault` via npm, the easiest way to get the latest version is:
 
 ```bash
-# Assuming you have git and bash
-git clone https://github.com/el-musleh/scriptvault
-cd scriptvault
-bash install.sh
+npm update -g scriptvault
 ```
 
+`npm update` automatically fetches the newest release from the registry and updates the global installation. If you want to force a re‑installation of the latest tag, use:
+
+```bash
+npm install -g scriptvault@latest
+```
+
+This will replace the current binary, library files and configuration, but it **does not** touch your vault scripts. All other customisations remain intact.
+
+---
 `install.sh` will:
 
 1. Copy `lib/` to `~/.local/lib/scriptvault`
